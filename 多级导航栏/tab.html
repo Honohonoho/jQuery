@@ -1,0 +1,202 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta charset="UTF-8">
+	<title>tab</title>
+	<style>
+		body{
+			margin: 0;
+			padding: 0;
+		}
+		.container{
+			margin: 10px 10px;
+		}
+		ul,li{
+			margin: 0;
+			padding: 0;
+			list-style: none;
+		}
+		.main-list{
+			width: 200px;
+			background: #c7171e;
+		}
+		.main-list .main-items{
+			position: relative;
+		}
+		.main-items .main-title{
+			display: block;
+			color: #fff;
+			font-size: 14px;
+			margin: 0 10px;
+			padding: 10px;
+			text-decoration: none;
+			border-bottom: 1px solid #de272e;
+		}
+		.main-items .main-title:last-of-type{
+			border: none;
+		}
+		.main-items .icon{
+			position: absolute;
+			color: #fff;
+			font-size: 14px;
+			right: 10px;
+			top: 10px;
+		}
+		.main-items .sec-list{
+			position: absolute;
+			top: 0;
+			left: 200px;
+			background: #fff;
+			border: 1px solid #ccc;
+			width: 200px;
+			font-size: 12px;
+			display: none;
+		}
+
+		.sec-list .sec-items{
+			width: 50px;
+			float: left;
+			padding: 10px 20px;	
+		}
+		.sec-items>a{
+			text-decoration: none;
+			color: #000;
+		}	
+	</style>
+</head>
+<body>
+	<div class="container">
+		<ul class="main-list">
+			<li class="main-items">
+				<a class="main-title" href="#">珠宝玉器</a>
+				<span class="icon">></span>
+				<ul class="sec-list">
+					<li class="sec-items">
+						<a href="">翡翠</a>
+					</li>
+					<li class="sec-items">
+						<a href="">玉石</a>
+					</li>
+					<li class="sec-items">
+						<a href="">宝石</a>
+					</li>
+					<li class="sec-items">
+						<a href="">水晶</a>
+					</li>
+					<li class="sec-items">
+						<a href="">玛瑙</a>
+					</li>
+					<li class="sec-items">
+						<a href="">珍珠</a>
+					</li>
+					<li class="sec-items">
+						<a href="">钻石</a>
+					</li>
+					<li class="sec-items">
+						<a href="">琥珀</a>
+					</li>
+					<li class="sec-items">
+						<a href="">和田</a>
+					</li>
+					<li class="sec-items">
+						<a href="">琥珀</a>
+					</li>
+				</ul>
+			</li>
+			<li class="main-items">
+				<a class="main-title" href="#">珠宝玉器</a>
+				<span class="icon">></span>
+				<ul class="sec-list">
+					<li class="sec-items">
+						<a href="">翡翠</a>
+					</li>
+					<li class="sec-items">
+						<a href="">玉石</a>
+					</li>
+					<li class="sec-items">
+						<a href="">宝石</a>
+					</li>
+					<li class="sec-items">
+						<a href="">水晶</a>
+					</li>
+					<li class="sec-items">
+						<a href="">玛瑙</a>
+					</li>
+					<li class="sec-items">
+						<a href="">珍珠</a>
+					</li>
+				</ul>
+			</li>
+			<li class="main-items">
+				<a class="main-title" href="#">珠宝玉器</a>
+				<span class="icon">></span>
+				<ul class="sec-list">
+					<li class="sec-items">
+						<a href="">翡翠</a>
+					</li>
+					<li class="sec-items">
+						<a href="">玉石</a>
+					</li>
+					<li class="sec-items">
+						<a href="">宝石</a>
+					</li>
+					<li class="sec-items">
+						<a href="">水晶</a>
+					</li>
+				</ul>
+			</li>
+			<li class="main-items">
+				<a class="main-title" href="#">珠宝玉器</a>
+				<span class="icon">></span>
+				<ul class="sec-list">
+					<li class="sec-items">
+						<a href="">翡翠</a>
+					</li>
+					<li class="sec-items">
+						<a href="">玉石</a>
+					</li>
+					<li class="sec-items">
+						<a href="">宝石</a>
+					</li>
+					<li class="sec-items">
+						<a href="">水晶</a>
+					</li>
+					<li class="sec-items">
+						<a href="">玛瑙</a>
+					</li>
+					<li class="sec-items">
+						<a href="">珍珠</a>
+					</li>
+				</ul>
+			</li>
+			<li class="main-items">
+				<a class="main-title" href="#">珠宝玉器</a>
+				<span class="icon">></span>
+				<ul class="sec-list">
+					<li class="sec-items">
+						<a href="">翡翠</a>
+					</li>
+					<li class="sec-items">
+						<a href="">玉石</a>
+					</li>
+					<li class="sec-items">
+						<a href="">宝石</a>
+					</li>
+					<li class="sec-items">
+						<a href="">水晶</a>
+					</li>
+				</ul>
+			</li>
+		</ul>
+	</div>
+	<script src="http://apps.bdimg.com/libs/jquery/1.9.1/jquery.js"></script>
+	<script>
+		$(".main-list .main-items").on("mouseenter",function(){
+			$(this).find(".sec-list").show();
+		});
+		$(".main-list .main-items").on("mouseleave",function(){
+			$(this).find(".sec-list").hide();
+		});
+	</script>
+</body>
+</html>
