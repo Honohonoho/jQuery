@@ -1,0 +1,127 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <title>lazy-load</title>
+    <style>
+      html,body,h2,p,ul,li{
+        margin: 0;
+        padding: 0;
+      }
+      a{
+        color: #333;
+        text-decoration: none;
+      }
+      .container{
+        max-width: 600px;
+        margin: 0 auto;
+      }
+      .item{
+        margin-top: 20px;
+      }
+      .item:after{
+        content: '';
+        display: block;
+        clear: both;
+      }
+      .item .thumb img{
+        width: 50px;
+        height: 50px;
+      }
+      .item .thumb {
+        float: left;
+      }
+      .item h2{
+        margin-left: 60px;
+        font-size: 14px;
+
+      }
+      .item p{
+        margin-left: 60px;
+        font-size: 14px;
+        margin-top: 10px;
+        color: #ccc;
+      }
+      .load-more{
+        visibility: hidden;
+        margin: 3px;
+        height: 3px;
+      }
+    </style>
+  </head>
+<body>
+    <div class="container clearfix">
+      <ul class="news">
+
+      </ul>
+      <p class="load-more"></p>
+    </div>
+  <script src="https://apps.bdimg.com/libs/jquery/2.1.4/jquery.min.js"></script>
+  <script src="http://apps.bdimg.com/libs/jquery/2.1.4/jquery.min.js"></script>
+  <script type="text/javascript">
+
+  var pageIndex = 0,
+      isOver = false,
+      isNewsArrive = true;
+
+  getNews(); //页面刚开始先获取数据
+  $(window).on('scroll',function(){
+    if(isVisible($('.load-more')) && !isOver && isNewsArrive){
+      getNews();
+    }
+  })
+
+  function getNews(){
+    isNewsArrive = false; //上一条请求未到来前，滚动滚动条不会发请求
+    $.get('/getNews',{page: pageIndex})
+      .done(function(e){
+        isNewsArrive = true;
+        if(e.status === 0){
+          pageIndex++
+          appendHtml(e.data)
+          if(isVisible($('.load-more')) && !isOver && isNewsArrive){
+            getNews();
+          }
+        }else{
+          console.log("获取新闻出错")
+        }
+      })
+      .fail(function(){ //链式调用
+      console.log('系统异常')
+      })
+  }
+
+  function isVisible($node){ //display: none;高度计算会出错，应为visibility: hidden;
+    var windowHeight = $(window).height(), //窗口高度
+      scrollTop = $(window).scrollTop(), //滚动条滚动距离
+      offsetTop = $node.offset().top, //元素距页面顶端高度
+      nodeHeight = $node.outerHeight(true); //包括外边距
+    if(windowHeight + scrollTop > offsetTop && scrollTop < offsetTop + nodeHeight){ //已进入页面，且未离开页面
+      return true;
+    }else{
+      return false;
+    }
+  }
+
+  function appendHtml(news){
+    if(news.length===0){
+      isOver = true; //加载至最后一条时，不再发请求
+      $('.container').append('<p>没有更多数据了。。</p>')
+      return;
+    }
+    var html = '';
+    $.each(news,function(){
+      html += '<li class="item">';
+      html += '<a href="' + this.link + '">';
+      html += '<div class="thumb"><img src="' + this.img + '"></div>';
+      html += '<h2>' + this.title + '</h2>';
+      html += '<p>' + this.brif + '</p>';
+      html +  '</a></li>';
+    })
+    $('.news').append(html);
+  }
+
+
+  </script>
+</body>
+</html>
