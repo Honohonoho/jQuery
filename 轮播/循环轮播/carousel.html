@@ -1,0 +1,206 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <title>循环轮播</title>
+    <style>
+      body{
+        margin: 0;
+        padding: 0;
+      }
+      ul,li{
+        list-style: none;
+        margin: 0;
+        padding: 0;
+      }
+      a{
+        text-decoration: none;
+        font-family: 'SimHei','SimSun';
+      }
+      .carousel{
+        position: relative;
+        width: 300px;
+        height: 200px;
+        margin: 10px;
+        overflow: hidden;
+      }
+      .carousel .img-list{
+        position: absolute;
+        width: 1200px;
+        height: 200px;
+      }
+      .carousel .img-list:after{
+        content: "";
+        display: block;
+        clear: both;
+      }
+      .carousel .img-list img{
+        width: 300px;
+        height: 200px;
+      }
+      .carousel .img-list li{
+        float: left;
+
+      }
+      .carousel .btn{
+        position: absolute;
+        top: 50%;
+        margin-top: -15px;
+        width: 30px;
+        height: 30px;
+        text-align: center;
+        line-height: 30px;
+        border-radius: 50%;
+        background-color: #333;
+        color: #fff;
+        opacity: 0.8;
+        display: block;
+      }
+      .carousel .btn-pre{
+        left: 10px;
+      }
+      .carousel .btn-next{
+        right: 10px;
+      }
+      .carousel .dot-list{
+        position: absolute;
+        bottom: 20px;
+        left: 0;
+        right: 0;
+        text-align: center;
+      }
+      .carousel .dot{
+        display: inline-block;
+      }
+      .carousel .dot>li{
+        /*float: left;*/
+        display: inline-block;
+        width: 20px;
+        height: 6px;
+        margin: 0 5px;
+        border-radius: 3px;
+        background-color: #fff;
+        cursor: pointer;
+      }
+      .carousel .dot .active{
+        background-color: #666;
+      }
+    </style>
+  </head>
+<body>
+  <div class="carousel">
+  <ul class="img-list">
+    <li data-index=0>
+      <a href="">
+        <img src="http://cdn.jirengu.com/book.jirengu.com/img/2.jpg" alt="2.jpg">
+      </a>
+    </li>
+    <li data-index=1>
+      <a href="">
+        <img src="http://cdn.jirengu.com/book.jirengu.com/img/3.jpg" alt="3.jpg">
+      </a>
+    </li>
+    <li data-index=2>
+      <a href="">
+        <img src="http://cdn.jirengu.com/book.jirengu.com/img/4.jpg" alt="4.jpg">
+      </a>
+    </li>
+    <li data-index=3>
+      <a href="">
+        <img src="http://cdn.jirengu.com/book.jirengu.com/img/5.jpg" alt="5.jpg">
+      </a>
+    </li>
+  </ul>
+    <a class="btn btn-pre" href="">&lt;</a>
+    <a class="btn btn-next" href="">&gt;</a>
+    <div class="dot-list">
+      <ul class="dot">
+        <li class="active"></li>
+        <li></li>
+        <li></li>
+        <li></li>
+      </ul>      
+    </div>
+  </div>
+
+  <script src="https://apps.bdimg.com/libs/jquery/1.9.1/jquery.js"></script>
+  <script>
+   
+//////↓↓↓↓↓↓定义变量↓↓↓↓↓↓//////
+      var $imgList = $('.img-list'),
+          $btnPre = $('.btn-pre'),
+          $btnNext = $('.btn-next'),
+          $dot = $('.dot'),
+          $dotChild = $('.dot li'),
+          $btnPre = $('.btn-pre'),
+          $btnNext = $('.btn-next'),   
+          $firstImg = $imgList.find('li').first(),
+          $lastImg = $imgList.find('li').last(),
+          $imgWidth = $firstImg.width(),
+          imgLength = $imgList.children().length, //在clone()之前定义
+          curPageIndex = 0,
+          isAnimate = false;
+//////↓↓↓↓↓↓↓↓↓↓↓↓//////
+      $imgList.prepend( $lastImg.clone() ); //在第一张前放最后一张图的克隆
+      $imgList.append( $firstImg.clone() ); //在最后一张后放第一张图的克隆
+
+      $imgList.width($firstImg.width() * $imgList.children().length); //容器宽度自适应
+      $imgList.css('left','-300px'); //显示第一张图片
+//////↓↓↓↓↓↓处理绑定↓↓↓↓↓↓//////
+      $btnPre.on('click',function(e){
+        e.preventDefault(); //阻止a链接默认跳转刷新
+        playPre(1);
+      })
+      $btnNext.on('click',function(e){
+        e.preventDefault();
+        playNext(1);
+      })
+      $dotChild.on('click',function(){
+        var dotIndex = $(this).index();
+        if(dotIndex > curPageIndex){
+          playNext(dotIndex - curPageIndex);
+        }else if(dotIndex < curPageIndex){
+          playPre(curPageIndex - dotIndex);
+        } 
+      })
+//////↓↓↓↓↓↓相关功能函数↓↓↓↓↓↓//////
+      function playNext(n){ //n为1，滚动1页，为2滚动2页
+        if(isAnimate) return; //状态锁，防止重复点击
+        isAnimate = true;
+        $imgList.animate({
+          left: '-=' + $imgWidth*n //不相邻的图片距离
+        },function(){
+          curPageIndex += n;
+          if(curPageIndex === imgLength){ //当滚到最后一张之后
+            $imgList.css({'left': -$imgWidth}); //回到第一张图片
+            curPageIndex = 0;
+          }
+          playDot(); //在动画之后执行
+          isAnimate = false;
+        })
+      }
+
+      function playPre(n){
+        if(isAnimate) return; //状态锁，防止重复点击
+        isAnimate = true;
+        $imgList.animate({
+          left: '+=' + $imgWidth*n //不相邻的图片距离
+        },function(){
+          curPageIndex -= n;
+          if(curPageIndex === -1){ //当滚到第一张之前
+            $imgList.css({'left': -(imgLength*$imgWidth)}); //回到最后一张图片
+            curPageIndex = imgLength - 1;
+          }
+          playDot(); //在动画之后执行
+          isAnimate = false;
+        })
+      }
+
+      function playDot(){
+        $dot.children().removeClass('active')
+            .eq(curPageIndex).addClass('active') //链式调用
+      }
+
+  </script>
+</body>
+</html>
