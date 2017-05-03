@@ -1,0 +1,132 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <title>瀑布流布局</title>
+    <style>
+      body{
+        margin: 10px;
+        padding: 0;
+      }
+      .container{
+        position: relative;
+      }
+      .box{
+        position: absolute;
+        width: 200px;
+        margin: 10px 10px 0 0;
+        transition: all 1s;
+
+      }
+      .h1{
+        height: 200px;
+        background-color: yellow;
+      }
+      .h2{
+        height: 300px;
+        background-color: blue;
+      }
+      .h3{
+        height: 400px;
+        background-color: orange;
+      }
+
+    </style>
+  </head>
+<body>
+  <div class="container">
+    <div class="box h3">
+      1
+    </div>
+    <div class="box h1">
+      2
+    </div>
+    <div class="box h2">
+      3
+    </div>
+    <div class="box h1">
+      4
+    </div>
+    <div class="box h3">
+      5
+    </div>
+    <div class="box h2">
+      6
+    </div>
+    <div class="box h1">
+      7
+    </div>
+    <div class="box h1">
+      8
+    </div>
+    <div class="box h2">
+      9
+    </div>
+    <div class="box h1">
+      10
+    </div>
+    <div class="box h3">
+      11
+    </div>
+    <div class="box h2">
+      12
+    </div>
+    <div class="box h1">
+      13
+    </div>
+    <div class="box h2">
+      14
+    </div>
+  </div>
+
+  <script src="https://apps.bdimg.com/libs/jquery/1.9.1/jquery.js"></script>
+  <script>
+
+      waterFull()
+      $(window).resize(function(){ //窗口改变重新排列
+        waterFull()
+      }) 
+
+      function waterFull(){
+        var $box = $('.box');
+        var boxWidth = $('.box').width();
+        var ctWidth = $('.container').width();
+        var columnNum = parseInt(ctWidth/boxWidth); //列数，取整
+        var arr = [];
+        for (var i = 0; i < columnNum; i++) { //初始化数组
+          arr[i] = 0;
+        } 
+        $box.each(function(){
+          var minValue = Math.min.apply(null,arr) //不需要传递参数，为null
+          var minIndex = arr.indexOf(minValue);
+          $(this).css({
+            top: arr[minIndex],
+            left: $(this).outerWidth(true) * minIndex
+          })
+          arr[minIndex] += $(this).outerHeight(true)
+        })
+      }
+
+/*
+      var waterFull = (function(){
+        function init(){
+          waterFull()
+          $(window).resize(function(){ //窗口改变重新排列
+            waterFull()
+          })
+        }
+        //函数可以封装进这里
+        return {
+          init: init
+        }
+      })()
+      waterFull.init() //通过输入这个来启动整个函数
+      */
+
+
+
+
+
+  </script>
+</body>
+</html>
