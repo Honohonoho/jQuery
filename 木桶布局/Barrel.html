@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <title>木桶布局</title>
+    <style>
+      body{
+        margin: 10px;
+        padding: 0;
+      }
+  
+
+    </style>
+  </head>
+<body>
+  
+
+  <script src="https://apps.bdimg.com/libs/jquery/1.9.1/jquery.js"></script>
+  <script>
+    function Barrel($ct){
+      this.$ct = $ct;
+      this.rowList = [];
+      this.loadImg();
+
+    } 
+
+    Barrel.prototype = {
+
+      loadImg: function(){
+        var _this = this;
+        var imgs = this.getImgUrls(10); //获得10张图片地址
+
+        for (var i = 0; i < imgs.length; i++) {
+          var img = new Image();
+          img.src = imgs[i];
+          img.onload = function(){
+            var imgInfo = {
+              target: img, //var img = new Image()
+              width: 200 * (img.width/img.height),
+              height: 200 
+            };
+            _this.render(imgInfo);
+          }
+        }
+      },
+
+      render: function(imgInfo){
+        var ctWidth = this.$ct.width();
+        var rowWidth = 0; //宽度之和
+        var newRowHeight = 0;
+        var lastImgInfo = imgInfo;
+        this.rowList.push(imgInfo); //数组的末尾添加
+        for (var i = 0; i < this.rowList.length; i++) {
+          rowWidth = rowWidth + this.rowList[i].width();
+        }
+        if(rowWidth > ctWidth){
+          this.rowList.pop(); //删除并返回数组的最后一个元素
+
+          newRowHeight = ctWidth*200/rowWidth; //同比缩放
+           //rowWidth/200 == ctWidth/ x
+
+          this.layout();
+          this.rowList = [];
+          this.rowList.push(imgInfo);
+        }
+      },
+
+      layout: function(newRowHeight){
+        var $rowCt = $('<div class="img-row"></div>');
+        $.each(this.rowList, function(indx,imgInfo){
+          var $imgCt = $('<div class="img-box"></div>'),
+              $img = $(imgInfo.target); //之前定义target: img,
+              $img.height(newRowHeight);
+              $imgCt.append($img);
+              $rowCt.append($imgCt);
+        });
+        this.$ct.append($rowCt);
+      },
+
+    }
+
+    var barrels = new Barrels($('.img-review'));
+
+
+  </script>
+</body>
+</html>
