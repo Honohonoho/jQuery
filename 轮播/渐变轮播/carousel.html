@@ -37,6 +37,9 @@
         position: absolute;
         display: none;
       }
+      .carousel .img-list>li:nth-child(1){
+        display: block;
+      }
       .carousel .btn{
         position: absolute;
         top: 50%;
@@ -129,87 +132,77 @@
           $imgChild = $('.img-list li'),
           imgLength = $imgList.children().length, 
           curIndex = 0,
-          index,
+          index = 0,
           isAnimate = false;
 //////↓↓↓↓↓↓处理绑定↓↓↓↓↓↓//////
       $btnPre.on('click',function(e){
         e.preventDefault(); //阻止a链接默认跳转刷新
-        if(curIndex === 0){
-          index = imgLength - 1;
-          play(curIndex,index);
-        }else{
-          index = curIndex - 1;
-          console.log(curIndex)
-          console.log(index)
-          play(curIndex,index);
-        }
+        playPre(1);
       })
 
       $btnNext.on('click',function(e){
         e.preventDefault();
-        if(curIndex === imgLength - 1){
-          index = 0;
-          play(curIndex,index);
-        }else{
-          index = curIndex + 1;
-          console.log(curIndex)
-        console.log(index)
-          play(curIndex,index);
-        }
+        playNext(1);
       })
 
       $dotChild.on('click',function(){
-        index = $(this).index();
-        play(curIndex,index);
+        pageIndex = $(this).index();
+        if(pageIndex > curIndex){
+          steps = pageIndex - curIndex;
+          playNext(steps); //调整传入参数
+        }else if(pageIndex < curIndex){
+          steps = curIndex - pageIndex;
+          playPre(steps); //调整传入参数
+        }
       })
 
-      
-      //autoPlay();
+   //   play(0,0); //初始显示
+      autoPlay(); //自动播放
 //////↓↓↓↓↓↓相关功能函数↓↓↓↓↓↓//////
-      function play(curIndex,index){
+      function playNext(n){ 
         if(isAnimate) return; //状态锁，防止重复点击
-        isAnimate = true;
-        console.log(curIndex)
-        console.log(index)
+        isAnimate = true; 
         $imgChild.eq(curIndex).fadeOut(500);
-        $imgChild.eq(index).fadeIn(500);
-        curIndex = index;
-        index++
-        console.log(curIndex)
-        console.log(index)
-        playDot(); //在动画之后执行
-        isAnimate = false;
+        if(curIndex >= imgLength - 1){ //循环滚动判断条件
+          index = 0;
+          curIndex = 0;
+          $imgChild.eq(index).fadeIn(500,function(){
+            isAnimate = false; //状态锁，防止重复点击
+          });
+          console.log(curIndex) //检查
+        }else{
+          index = index + 1*n;
+          curIndex = index;
+          $imgChild.eq(index).fadeIn(500,function(){
+            isAnimate = false; //状态锁，防止重复点击
+          });
+          console.log(curIndex) //检查
+        }
+        playDot(); //在动画之后执行        
       }
-  /*    function playNext(){ 
+
+      function playPre(n){
         if(isAnimate) return; //状态锁，防止重复点击
         isAnimate = true;
-
-        $imgList.eq(curPageIndex).fadeOut(500);
-        if(curPageIndex === imgLength - 1){
-          curPageIndex = 0;
-          $imgList.eq(curPageIndex).fadeIn(500)
+        $imgChild.eq(curIndex).fadeOut(500);
+        if(curIndex <= 0){  //循环滚动判断条件
+          index = imgLength - 1;
+          curIndex = index;
+          $imgChild.eq(index).fadeIn(500,function(){
+            isAnimate = false; //状态锁，防止重复点击
+          });
+          console.log(curIndex) //检查
         }else{
-          $imgList.eq(curPageIndex++).fadeIn(500);
+          index = index - 1*n;
+          curIndex = index;
+          $imgChild.eq(index).fadeIn(500,function(){
+            isAnimate = false; //状态锁，防止重复点击
+          });
+          console.log(curIndex) //检查
         }
         playDot(); //在动画之后执行
-        isAnimate = false;       
       }
 
-      function playPre(){
-        if(isAnimate) return; //状态锁，防止重复点击
-        isAnimate = true;
-
-        $imgList.eq(curPageIndex).fadeOut(500);
-        if(curPageIndex === 0){
-          curPageIndex = imgLength - 1;
-          $imgList.eq(curPageIndex).fadeIn(500)
-        }else{
-          $imgList.eq(curPageIndex-1).fadeIn(500);
-        }
-        playDot(); //在动画之后执行
-        isAnimate = false;
-      }
-*/
       function playDot(){
         $dot.children().removeClass('active')
             .eq(curIndex).addClass('active') //链式调用
@@ -217,9 +210,10 @@
 
       function autoPlay(){
         setInterval(function(){
-          play();
+          playNext(1);
         }, 2000);
       }
+      
   </script>
 </body>
 </html>
