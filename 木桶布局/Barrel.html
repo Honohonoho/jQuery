@@ -13,7 +13,7 @@
         margin: 10px auto;
       }
       .img-row{
-        margin-bottom: 10px;
+        margin-bottom: 8px;
       }
       .img-row:after{
         content: "";
@@ -24,10 +24,9 @@
         float: left;
       }
       .img-box img{
-        margin-right: 0px;
+        margin-right: ;
       }
   
-
     </style>
   </head>
 <body>
@@ -53,10 +52,9 @@
   
     function Barrel($ct){
       this.$ct = $ct;
-      this.imgNum = 50; //自定义
+      this.imgNum = 100; //自定义
       this.baseHeight = 200; //自定义
-      this.marginRight = 8;
-      //this.imgIndex = 0;
+      //this.marginRight = 8;
       this.rowList = [];
       this.loadImg();
 
@@ -92,6 +90,7 @@
       },
 
       render: function(imgInfo){
+        //var _this = this;
         var rowList = this.rowList;
         var ctWidth = this.$ct.width(); //父容器宽度
         var rowWidth = 0; //每行宽度之和
@@ -99,41 +98,31 @@
         var lastImgInfo = imgInfo; //每行最后一个图片
         this.rowList.push(imgInfo); //该行的数组的末尾添加
         for (var i = 0; i < this.rowList.length; i++) { //该行的总宽度
-          rowWidth = rowWidth + this.rowList[i].width + this.marginRight;
+          rowWidth = rowWidth + this.rowList[i].width; //有margin时注意
           //console.log(this.rowList[i])
         }
         if(rowWidth > ctWidth){ //判断是否超出总宽度
-          this.rowList.pop(lastImgInfo); //删除数组的最后一个元素
-          rowWidth = rowWidth - lastImgInfo.width - this.marginRight; //重新计算这一行的图片总宽度
+          this.rowList.pop(); //删除数组的最后一个元素
+          rowWidth = rowWidth - lastImgInfo.width; //重新计算这一行的图片总宽度,有margin时注意
           newRowHeight = (ctWidth * this.baseHeight) / rowWidth; //将这一行图片等比例放大直到总宽度等于父容器宽度，即占满宽度
-
-          console.log(newRowHeight);
-
           this.layOut(newRowHeight); //渲染至页面
           this.rowList = []; //清空数组，计算下一行
-          this.rowList.push(lastImgInfo); //把刚去掉的图片添加至下一行首个
+          this.rowList.push(lastImgInfo); //把刚去掉的图片添加至下一行首个   
         }
       },
 
       layOut: function(newRowHeight){
-        
-        var _this = this; //局部变量
         var $rowCt = $('<div class="img-row"></div>'); //每一行容器
         $.each(this.rowList, function(idx,imgInfo){
           var $imgCt = $('<div class="img-box"></div>'); //每个图片容器
-          var $img = $(imgInfo.target); //之前定义target: img,
-          //var ratio = (imgInfo.width + this.marginRight) / _this.baseHeight; //计算缩放系数
-          //var newRowWidth = (newRowHeight * ratio) - this.marginRight;
+          $img = $(imgInfo.target); //之前定义target: img,
           $img.height(newRowHeight); //设定宽高
-          //$img.width(newRowWidth);
           $imgCt.append($img);
           $rowCt.append($imgCt);
-          console.log($img)
         });
         this.$ct.append($rowCt);
       }
  
-
     };
 
     new Barrel($('.img-preview'));
